@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:14.4
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
+  backend:
+    build: .
+    volumes:
+      - .:/app:rw
+    ports:
+      - "11000:11000"
+    command: dev
