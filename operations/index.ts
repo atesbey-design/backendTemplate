@@ -1,3 +1,4 @@
 
-export {AnnouncementOperations} from "./AnnouncementOperations"
+
 export {UserOperations} from "./UserOperations"
+export {ActivityOperations} from "./ActivitieOperations"

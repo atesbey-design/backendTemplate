@@ -3,11 +3,10 @@ import fastify from 'fastify'
 
 import UserService from './services/User/Server'
 import cors from '@fastify/cors'
-
-import AnnouncmentService from './services/Announcement/Server'
-
 import Connectors from './connectors/index'
 import fastifyJwt from '@fastify/jwt'
+import blogService from './services/Blog/Server'
+import activityService from './services/Activities/Server'
 const server = fastify({ maxParamLength:700, logger: true })
 
 server.register(fastifyJwt, {
@@ -26,8 +25,8 @@ Connectors
 
 server.register(UserService)
 
-server.register(AnnouncmentService)
-
+server.register(blogService)
+server.register(activityService)
 server.listen({ port: 11000 , host:"0.0.0.0"}, (err, address) => {
   if (err) {
     console.error(err)

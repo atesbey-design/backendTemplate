@@ -2,39 +2,35 @@ import { connectPostgres } from "../connectors/Postgres";
 export const db: any = connectPostgres()
 /*
 User={
-    email: string,
-    password: string,
-    phonenumber: string,
+    imgurl: string,
+
+    property: string,
 } */
 
 //Create user function
 
 export const createUser = async ({
-email,
-password,
-phonenumber,
+imgurl,
+property,
 
 
 }: {
-email: string,
-password: string,
-phonenumber: string,
-
+imgurl: string;
+property:{
+    name:String,
+    status:string,
+    consensusId:number,
+    attendantId:number,
+    subAttendant:string,
+}
 
 }) => {
   
-
-    const user = await db.query(
-      `INSERT INTO users (email, password, phonenumber) VALUES ($[email], $[password], $[phonenumber]) RETURNING *`,
-      {
-        email,
-        password,
-        phonenumber
-    
-      }
-    )
-
-    return user
+    const result = await db.query(
+        `INSERT INTO users (imgurl, property) VALUES ($1, $2) RETURNING *`,
+        [imgurl, property]
+    );
+    return result;
 }
 
 //Get all users function
@@ -55,21 +51,12 @@ export const deleteUser = async (id: number) => {
     return user
 }
 
-//check users with email and password
-
-export const checkUser = async ({ email, password }: { email: string, password: string }) => {
-    const user = await db.oneOrNone(`SELECT * FROM users WHERE email = $[email] AND password = $[password]`, { email, password })
-    return user
-}
-
-
-
 export const UserOperations = {
     createUser,
     getAllUsers,
     getsingleUser,
     deleteUser,
-    checkUser
+
 
 
   }

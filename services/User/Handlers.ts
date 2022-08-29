@@ -1,5 +1,4 @@
 
-import { connectPostgres } from '../../connectors/Postgres'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { UserOperations } from '../../operations/UserOperations'
 
@@ -7,13 +6,17 @@ import { UserOperations } from '../../operations/UserOperations'
 
 
 
+/*User={
+  imgurl: string,
 
+  property: string,
+} */
 
 
 //getAllUsers
 export const getAllUsers = async (req: FastifyRequest, rep: FastifyReply) => {
-  const users = await UserOperations.getAllUsers().catch((err)=>console.log(err))
-  return users
+  const users = await UserOperations.getAllUsers();
+rep.send(users)
 }
 
 //getsingleUser
@@ -39,27 +42,26 @@ export const createUser = async (
   req: FastifyRequest<{
     Body: {
    
-      email: string
-      password: string
-      phonenumber: string
-  
+      
+      imgurl: string;
+      property: {
+        name:String,
+        status: string;
+        consensusId: number;
+        attendantId: number;
+        subAttendant: string;
+      };
     }
   }>,
   reply: FastifyReply
 ) => {
-  const { email, password,phonenumber} = req.body
-
-
-  const user = await UserOperations.createUser({
-    email: email,
-    password: password,
-    phonenumber: phonenumber,
-    
-  })
+  const { imgurl, property } = req.body
+  const result = await UserOperations.createUser({ imgurl, property })
+ 
 
   reply.code(200).send({
     message: 'create user success',
-    data: user,
+    data: result,
    
   })
   reply.code(500).send({
@@ -90,32 +92,6 @@ export const deleteUser = async (
 }
 
 //..................................
-
-//reset password
-export const resetPassword = async (
-  req: FastifyRequest<{
-    Body: {
-      email: string
-      password: string
-    }
-  }>,
-  rep: FastifyReply
-) => {
-  const db: any = connectPostgres()
-  const result = await db.any(
-    'UPDATE users SET password =$[password] WHERE email = ${req.body.email}',
-    {
-      password: req.body.password
-    }
-  )
-  console.log('email', req.body.email)
-  console.log('password', req.body.password)
-  rep.code(200).send({
-    message: 'Reset password success'
-  })
-
-  return result
-}
 
 
 
